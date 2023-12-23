@@ -117,6 +117,7 @@ function resetBall(){
 }
 //Player Mouvement
 canvas.addEventListener("mousemove",(e)=>{
+    if(paused)return;
     let rect=canvas.getBoundingClientRect();
     player.y=e.clientY-rect.top-player.height/2;
 });
@@ -127,7 +128,10 @@ function lerp(a,b,n){
 }
 
 //Update :pos,mov,score,.......
+let paused =false;
 function update(){
+    if(paused)return;
+
     ball.x+=ball.velocityX;
     ball.y+=ball.velocityY;
 
@@ -168,3 +172,14 @@ function game(){
 const fps=60;
 setInterval(game,1000/fps);
 
+const pauseBtn=document.querySelector("#pause");
+
+pauseBtn.addEventListener("click",()=>{
+    if(pauseBtn.innerHTML=="Pause"){
+        pauseBtn.innerHTML="Resume";
+        paused=false;
+    }else{
+        pauseBtn.innerHTML="Pause";
+        paused=true;
+    }
+})

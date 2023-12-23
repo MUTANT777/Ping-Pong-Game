@@ -12,6 +12,21 @@
         margin :auto;
         width: fit-content;
     }
+    #pause{
+        cursor: pointer;
+        border: 3px solid #59ce8f;
+        color:#59ce8f;
+        border-radius: 10px;
+        width: fit-content;
+        margin: auto;
+        padding: 15px;
+        font-size: 30px;
+        transition: all .2s ease;
+    }
+    #pause:hover{
+        background-color: #59ce8f;
+        color: white;
+    }
 </style>
 <body>
     <div class="game-container">
@@ -19,6 +34,7 @@
 
         </canvas>
     </div>
+    <div id="pause">pause</div>
     <script src="pong.js"></script>
 </body>
 </html>
