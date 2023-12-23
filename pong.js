@@ -6,6 +6,7 @@ const ctx = canvas.getContext('2d');
 const PLAYER_WIDTH=20;
 const PLAYER_HEIGHT=100;
 const BALL_START_SPEED=1;
+const COM_LEVEL=.1;
 //Game Object *******
 const player={
     x:0,
@@ -92,9 +93,57 @@ function render(){
     //draw the ball
     drawCircle(ball.x,ball.y,ball.radius,ball.color);
 }
+// check collision 
+function collision(b,p){
+    b.top=b.y-b.radius;
+    b.bottom=b.y+b.radius;
+    b.left=b.x-b.radius;
+    b.right=b.x+b.radius;
+
+    p.top=p.y;
+    p.bottom=p.y+p.height;
+    p.left=p.x;
+    p.right=p.x+p.width;
+    return (b.right>p.left && b.bottom>p.top && b.left<p.right && b.top<p.bottom);
+
+}
+//Player Mouvement
+canvas.addEventListener("mousemove",(e)=>{
+    let rect=canvas.getBoundingClientRect();
+    player.y=e.clientY-rect.top-player.height/2;
+});
+
+//lerp function
+function lerp(a,b,n){
+    return (1-n)*a+n*b;
+}
+
+//Update :pos,mov,score,.......
+function update(){
+    ball.x+=ball.velocityX;
+    ball.y+=ball.velocityY;
+
+    //ball collision with top &bottom borders
+    if(ball.y+ball.radius>canvas.height||ball.y-ball.radius<0){
+        ball.velocityY=-ball.velocityY;
+    }
+    //ball collision with player & computer
+    let playerOrComputer=(ball.x<canvas.width/2)?player:computer;
+    if(collision(ball,playerOrComputer)){
+        ball.velocityX=-ball.velocityX;
+    }
+    //computer Mouvement 
+    let targetPos=ball.y -computer.height/2;
+    let currentPos=computer.y;
+    computer.y=lerp(currentPos,targetPos,COM_LEVEL);
+
+        
+}
+    
 
 //Game Init *************
 function game(){
+    update();
     render();
 }
 
