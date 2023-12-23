@@ -7,6 +7,7 @@ const PLAYER_WIDTH=20;
 const PLAYER_HEIGHT=100;
 const BALL_START_SPEED=1;
 const COM_LEVEL=.1;
+const BALL_DELTA_SPEED=.1;
 //Game Object *******
 const player={
     x:0,
@@ -107,6 +108,13 @@ function collision(b,p){
     return (b.right>p.left && b.bottom>p.top && b.left<p.right && b.top<p.bottom);
 
 }
+//Reset ball
+function resetBall(){
+    ball.x=canvas.width/2;
+    ball.y=canvas.height/2;
+    ball.speed=BALL_START_SPEED;
+    ball.velocityX=-ball.velocityX;
+}
 //Player Mouvement
 canvas.addEventListener("mousemove",(e)=>{
     let rect=canvas.getBoundingClientRect();
@@ -131,13 +139,22 @@ function update(){
     let playerOrComputer=(ball.x<canvas.width/2)?player:computer;
     if(collision(ball,playerOrComputer)){
         ball.velocityX=-ball.velocityX;
+        //every time the ball hits a player,we increase its speed
+        ball.speed+=BALL_DELTA_SPEED;
     }
     //computer Mouvement 
     let targetPos=ball.y -computer.height/2;
     let currentPos=computer.y;
     computer.y=lerp(currentPos,targetPos,COM_LEVEL);
-
-        
+    //Update the score
+    if(ball.x-ball.radius<0){
+        computer.score++;
+        resetBall();
+    }else if (ball.x+ball.radius >canvas.width){
+        player.score++;
+        resetBall();
+    
+    }   
 }
     
 
@@ -150,3 +167,4 @@ function game(){
 //Game Loop *************
 const fps=60;
 setInterval(game,1000/fps);
+
